@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , pickClassDialog(nullptr)
   , createClassDialog(nullptr)
   , birthSignDialog(nullptr)
   , reviewDialog(nullptr)
@@ -87,7 +86,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete pickClassDialog;
     delete createClassDialog;
     delete birthSignDialog;
     delete reviewDialog;
@@ -238,14 +236,16 @@ void WindowManager::updateVisible()
 
     if (mode == GM_ClassPick)
     {
+        PickClassDialog* pickClassDialog = static_cast<PickClassDialog*>(getWindow("pickClassDialog"));
         if (pickClassDialog)
-            removeDialog(pickClassDialog);
+            removeWindow(pickClassDialog);
         pickClassDialog = new PickClassDialog(*this);
         pickClassDialog->setNextButtonShow(creationStage >= ClassChosen);
         pickClassDialog->setClassId(playerClass.name);
         pickClassDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onPickClassDialogDone);
         pickClassDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onPickClassDialogBack);
         pickClassDialog->open();
+        addWindow("pickClassDialog", pickClassDialog);
         return;
     }
 
@@ -844,6 +844,7 @@ void WindowManager::onGenerateClassDone(WindowBase* parWindow)
 
 void WindowManager::onPickClassDialogDone(WindowBase* parWindow)
 {
+    PickClassDialog* pickClassDialog = static_cast<PickClassDialog*>(parWindow);
     if (pickClassDialog)
     {
         const std::string &classId = pickClassDialog->getClassId();
@@ -852,7 +853,7 @@ void WindowManager::onPickClassDialogDone(WindowBase* parWindow)
         const ESM::Class *klass = environment.mWorld->getStore().classes.find(classId);
         if (klass)
             playerClass = *klass;
-        removeDialog(pickClassDialog);
+        removeWindow(pickClassDialog);
     }
 
     // Go to next dialog if class was previously chosen
@@ -869,12 +870,13 @@ void WindowManager::onPickClassDialogDone(WindowBase* parWindow)
 
 void WindowManager::onPickClassDialogBack()
 {
+    PickClassDialog* pickClassDialog = static_cast<PickClassDialog*>(getWindow("pickClassDialog"));
     if (pickClassDialog)
     {
         const std::string classId = pickClassDialog->getClassId();
         if (!classId.empty())
             environment.mMechanicsManager->setPlayerClass(classId);
-        removeDialog(pickClassDialog);
+        removeWindow(pickClassDialog);
     }
 
     setGuiMode(GM_Class);
