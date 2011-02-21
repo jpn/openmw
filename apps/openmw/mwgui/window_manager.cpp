@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , generateClassResultDialog(nullptr)
   , pickClassDialog(nullptr)
   , createClassDialog(nullptr)
   , birthSignDialog(nullptr)
@@ -88,7 +87,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete generateClassResultDialog;
     delete pickClassDialog;
     delete createClassDialog;
     delete birthSignDialog;
@@ -757,13 +755,15 @@ void WindowManager::showClassQuestionDialog()
             }
         }
 
+        GenerateClassResultDialog* generateClassResultDialog = static_cast<GenerateClassResultDialog*>(getWindow("generateClassResultDialog"));
         if (generateClassResultDialog)
-            removeDialog(generateClassResultDialog);
+            removeWindow(generateClassResultDialog);
         generateClassResultDialog = new GenerateClassResultDialog(*this);
         generateClassResultDialog->setClassId(generateClass);
         generateClassResultDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onGenerateClassBack);
         generateClassResultDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onGenerateClassDone);
         generateClassResultDialog->open();
+        addWindow("generateClassResultDialog", generateClassResultDialog);
         return;
     }
 
@@ -816,8 +816,9 @@ void WindowManager::onGenerateClassBack()
     if(creationStage < ClassChosen)
         creationStage = ClassChosen;
 
+    WindowBase* generateClassResultDialog = getWindow("generateClassResultDialog");
     if (generateClassResultDialog)
-        removeDialog(generateClassResultDialog);
+        removeWindow(generateClassResultDialog);
     environment.mMechanicsManager->setPlayerClass(generateClass);
 
     setGuiMode(GM_Class);
@@ -825,8 +826,7 @@ void WindowManager::onGenerateClassBack()
 
 void WindowManager::onGenerateClassDone(WindowBase* parWindow)
 {
-    if (generateClassResultDialog)
-        removeDialog(generateClassResultDialog);
+    removeWindow(parWindow);
     environment.mMechanicsManager->setPlayerClass(generateClass);
 
      // Go to next dialog if class was previously chosen
