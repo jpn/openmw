@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , createClassDialog(nullptr)
   , birthSignDialog(nullptr)
   , reviewDialog(nullptr)
   , gui(_gui)
@@ -86,7 +85,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete createClassDialog;
     delete birthSignDialog;
     delete reviewDialog;
 
@@ -251,12 +249,14 @@ void WindowManager::updateVisible()
 
     if (mode == GM_ClassCreate)
     {
+        CreateClassDialog* createClassDialog = static_cast<CreateClassDialog*>(getWindow("createClassDialog"));
         if (createClassDialog)
-            removeDialog(createClassDialog);
+            removeWindow(createClassDialog);
         createClassDialog = new CreateClassDialog(*this);
         createClassDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onCreateClassDialogDone);
         createClassDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onCreateClassDialogBack);
         createClassDialog->open();
+        addWindow("createClassDialog", createClassDialog);
         return;
     }
 
@@ -884,6 +884,7 @@ void WindowManager::onPickClassDialogBack()
 
 void WindowManager::onCreateClassDialogDone(WindowBase* parWindow)
 {
+    CreateClassDialog* createClassDialog = static_cast<CreateClassDialog*>(getWindow("createClassDialog"));
     if (createClassDialog)
     {
         ESM::Class klass;
@@ -909,7 +910,7 @@ void WindowManager::onCreateClassDialogDone(WindowBase* parWindow)
         environment.mMechanicsManager->setPlayerClass(klass);
         playerClass = klass;
 
-        removeDialog(createClassDialog);
+        removeWindow(createClassDialog);
     }
 
     // Go to next dialog if class was previously chosen
@@ -926,8 +927,9 @@ void WindowManager::onCreateClassDialogDone(WindowBase* parWindow)
 
 void WindowManager::onCreateClassDialogBack()
 {
+    CreateClassDialog* createClassDialog = static_cast<CreateClassDialog*>(getWindow("createClassDialog"));
     if (createClassDialog)
-        removeDialog(createClassDialog);
+        removeWindow(createClassDialog);
 
     setGuiMode(GM_Class);
 }
