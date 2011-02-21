@@ -52,9 +52,7 @@ namespace MWGui
   class InventoryWindow;
   class Console;
 
-  class ReviewDialog;
   class MessageBoxManager;
-
   struct ClassPoint
   {
       const char *id;
@@ -82,8 +80,6 @@ namespace MWGui
 #endif
     Console *console;
 
-    // Character creation
-    ReviewDialog *reviewDialog;
     typedef std::map<std::string, WindowBase*> WindowMap;
     WindowMap mWindows;
 

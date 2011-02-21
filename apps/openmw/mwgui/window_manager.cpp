@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , reviewDialog(nullptr)
   , gui(_gui)
   , mode(GM_Game)
   , nextMode(GM_Game)
@@ -84,7 +83,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete reviewDialog;
 
     for (WindowMap::iterator it = mWindows.begin(); it != mWindows.end(); ++it)
     {
@@ -275,8 +273,9 @@ void WindowManager::updateVisible()
 
     if (mode == GM_Review)
     {
+        ReviewDialog* reviewDialog = static_cast<ReviewDialog*>(getWindow("reviewDialog"));
         if (reviewDialog)
-            removeDialog(reviewDialog);
+            removeWindow(reviewDialog);
         reviewDialog = new ReviewDialog(*this);
         reviewDialog->setPlayerName(playerName);
         reviewDialog->setRace(playerRaceId);
@@ -308,6 +307,7 @@ void WindowManager::updateVisible()
         reviewDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onReviewDialogBack);
         reviewDialog->eventActivateDialog = MyGUI::newDelegate(this, &WindowManager::onReviewActivateDialog);
         reviewDialog->open();
+        addWindow("reviewDialog", reviewDialog);
         return;
     }
 
@@ -969,24 +969,24 @@ void WindowManager::onBirthSignDialogBack()
 
 void WindowManager::onReviewDialogDone(WindowBase* parWindow)
 {
-    if (reviewDialog)
-        removeDialog(reviewDialog);
-
+    removeWindow(parWindow);
     setGuiMode(GM_Game);
 }
 
 void WindowManager::onReviewDialogBack()
 {
+    WindowBase* reviewDialog = getWindow("reviewDialog");
     if (reviewDialog)
-        removeDialog(reviewDialog);
+        removeWindow(reviewDialog);
 
     setGuiMode(GM_Birth);
 }
 
 void WindowManager::onReviewActivateDialog(int parDialog)
 {
+    WindowBase* reviewDialog = getWindow("reviewDialog");
     if (reviewDialog)
-        removeDialog(reviewDialog);
+        removeWindow(reviewDialog);
     creationStage = ReviewNext;
 
     switch(parDialog)
