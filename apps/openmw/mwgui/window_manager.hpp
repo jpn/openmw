@@ -52,7 +52,6 @@ namespace MWGui
   class InventoryWindow;
   class Console;
 
-  class BirthDialog;
   class ReviewDialog;
   class MessageBoxManager;
 
@@ -84,7 +83,6 @@ namespace MWGui
     Console *console;
 
     // Character creation
-    BirthDialog *birthSignDialog;
     ReviewDialog *reviewDialog;
     typedef std::map<std::string, WindowBase*> WindowMap;
     WindowMap mWindows;

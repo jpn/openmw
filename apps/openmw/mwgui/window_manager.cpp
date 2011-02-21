@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , birthSignDialog(nullptr)
   , reviewDialog(nullptr)
   , gui(_gui)
   , mode(GM_Game)
@@ -85,7 +84,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete birthSignDialog;
     delete reviewDialog;
 
     for (WindowMap::iterator it = mWindows.begin(); it != mWindows.end(); ++it)
@@ -262,14 +260,16 @@ void WindowManager::updateVisible()
 
     if (mode == GM_Birth)
     {
+        BirthDialog* birthSignDialog = static_cast<BirthDialog*>(getWindow("birthSignDialog"));
         if (birthSignDialog)
-            removeDialog(birthSignDialog);
+            removeWindow(birthSignDialog);
         birthSignDialog = new BirthDialog(*this);
         birthSignDialog->setNextButtonShow(creationStage >= BirthSignChosen);
         birthSignDialog->setBirthId(playerBirthSignId);
         birthSignDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onBirthSignDialogDone);
         birthSignDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onBirthSignDialogBack);
         birthSignDialog->open();
+        addWindow("birthSignDialog", birthSignDialog);
         return;
     }
 
@@ -936,12 +936,13 @@ void WindowManager::onCreateClassDialogBack()
 
 void WindowManager::onBirthSignDialogDone(WindowBase* parWindow)
 {
+    BirthDialog* birthSignDialog = static_cast<BirthDialog*>(getWindow("birthSignDialog"));
     if (birthSignDialog)
     {
         playerBirthSignId = birthSignDialog->getBirthId();
         if (!playerBirthSignId.empty())
             environment.mMechanicsManager->setPlayerBirthsign(playerBirthSignId);
-        removeDialog(birthSignDialog);
+        removeWindow(birthSignDialog);
     }
 
     // Go to next dialog if birth sign was previously chosen
@@ -956,10 +957,11 @@ void WindowManager::onBirthSignDialogDone(WindowBase* parWindow)
 
 void WindowManager::onBirthSignDialogBack()
 {
+    BirthDialog* birthSignDialog = static_cast<BirthDialog*>(getWindow("birthSignDialog"));
     if (birthSignDialog)
     {
         environment.mMechanicsManager->setPlayerBirthsign(birthSignDialog->getBirthId());
-        removeDialog(birthSignDialog);
+        removeWindow(birthSignDialog);
     }
 
     setGuiMode(GM_Class);
