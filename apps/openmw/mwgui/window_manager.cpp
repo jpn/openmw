@@ -26,7 +26,6 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
   : environment(environment)
   , dialogueWindow(nullptr)
   , classChoiceDialog(nullptr)
-  , generateClassQuestionDialog(nullptr)
   , generateClassResultDialog(nullptr)
   , pickClassDialog(nullptr)
   , createClassDialog(nullptr)
@@ -93,7 +92,6 @@ WindowManager::~WindowManager()
 
     delete dialogueWindow;
     delete classChoiceDialog;
-    delete generateClassQuestionDialog;
     delete generateClassResultDialog;
     delete pickClassDialog;
     delete createClassDialog;
@@ -773,8 +771,9 @@ void WindowManager::showClassQuestionDialog()
         return;
     }
 
+    InfoBoxDialog* generateClassQuestionDialog = static_cast<InfoBoxDialog*>(getWindow("generateClassQuestionDialog"));
     if (generateClassQuestionDialog)
-        removeDialog(generateClassQuestionDialog);
+        removeWindow(generateClassQuestionDialog);
     generateClassQuestionDialog = new InfoBoxDialog(*this);
 
     InfoBoxDialog::ButtonList buttons;
@@ -785,12 +784,14 @@ void WindowManager::showClassQuestionDialog()
     generateClassQuestionDialog->setButtons(buttons);
     generateClassQuestionDialog->eventButtonSelected = MyGUI::newDelegate(this, &WindowManager::onClassQuestionChosen);
     generateClassQuestionDialog->open();
+    addWindow("generateClassQuestionDialog", generateClassQuestionDialog);
 }
 
 void WindowManager::onClassQuestionChosen(int _index)
 {
+    WindowBase* generateClassQuestionDialog = getWindow("generateClassQuestionDialog");
     if (generateClassQuestionDialog)
-        removeDialog(generateClassQuestionDialog);
+        removeWindow(generateClassQuestionDialog);
     if (_index < 0 || _index >= 3)
     {
         setGuiMode(GM_Class);
