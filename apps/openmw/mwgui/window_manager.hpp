@@ -53,7 +53,6 @@ namespace MWGui
   class Console;
 
   class InfoBoxDialog;
-  class RaceDialog;
   class DialogueWindow;
   class ClassChoiceDialog;
   class GenerateClassResultDialog;
@@ -91,7 +90,6 @@ namespace MWGui
     Console *console;
 
     // Character creation
-    RaceDialog *raceDialog;
     DialogueWindow *dialogueWindow;
     ClassChoiceDialog *classChoiceDialog;
     InfoBoxDialog *generateClassQuestionDialog;

@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , raceDialog(nullptr)
   , dialogueWindow(nullptr)
   , classChoiceDialog(nullptr)
   , generateClassQuestionDialog(nullptr)
@@ -92,7 +91,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete raceDialog;
     delete dialogueWindow;
     delete classChoiceDialog;
     delete generateClassQuestionDialog;
@@ -206,8 +204,12 @@ void WindowManager::updateVisible()
 
     if (mode == GM_Race)
     {
+        RaceDialog* raceDialog = static_cast<RaceDialog*>(getWindow("raceDialog"));
         if (raceDialog)
-            removeDialog(raceDialog);
+        {
+            removeWindow(raceDialog);
+            raceDialog = NULL;
+        }
         raceDialog = new RaceDialog(*this);
         raceDialog->setNextButtonShow(creationStage >= RaceChosen);
         raceDialog->setRaceId(playerRaceId);
@@ -215,6 +217,7 @@ void WindowManager::updateVisible()
         raceDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onRaceDialogBack);
         raceDialog->eventSave = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerRace);
         raceDialog->open();
+        addWindow("raceDialog", raceDialog);
         return;
     }
 
@@ -543,10 +546,7 @@ void WindowManager::onNameDialogDone(WindowBase* parWindow)
 
 void WindowManager::onRaceDialogDone(WindowBase* parWindow)
 {
-    if (raceDialog)
-    {
-        removeDialog(raceDialog);
-    }
+    removeWindow(parWindow);
 
     // Go to next dialog if race was previously chosen
     if (creationStage == ReviewNext)
@@ -572,9 +572,10 @@ void WindowManager::onDialogueWindowBye()
 
 void WindowManager::onRaceDialogBack()
 {
+    WindowBase* raceDialog = getWindow("raceDialog");
     if (raceDialog)
     {
-        removeDialog(raceDialog);
+        removeWindow(raceDialog);
     }
 
     setGuiMode(GM_Name);
