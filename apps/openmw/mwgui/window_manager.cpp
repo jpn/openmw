@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , classChoiceDialog(nullptr)
   , generateClassResultDialog(nullptr)
   , pickClassDialog(nullptr)
   , createClassDialog(nullptr)
@@ -89,7 +88,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete classChoiceDialog;
     delete generateClassResultDialog;
     delete pickClassDialog;
     delete createClassDialog;
@@ -219,11 +217,13 @@ void WindowManager::updateVisible()
 
     if (mode == GM_Class)
     {
+        ClassChoiceDialog* classChoiceDialog = static_cast<ClassChoiceDialog*>(getWindow("classChoiceDialog"));
         if (classChoiceDialog)
-            removeDialog(classChoiceDialog);
+            removeWindow(classChoiceDialog);
         classChoiceDialog = new ClassChoiceDialog(*this);
         classChoiceDialog->eventButtonSelected = MyGUI::newDelegate(this, &WindowManager::onClassChoice);
         classChoiceDialog->open();
+        addWindow("classChoiceDialog", classChoiceDialog);
         return;
     }
 
@@ -582,9 +582,10 @@ void WindowManager::onRaceDialogBack()
 
 void WindowManager::onClassChoice(int _index)
 {
+    WindowBase* classChoiceDialog = getWindow("classChoiceDialog");
     if (classChoiceDialog)
     {
-        removeDialog(classChoiceDialog);
+        removeWindow(classChoiceDialog);
     }
 
     switch(_index)
