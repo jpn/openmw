@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , nameDialog(nullptr)
   , raceDialog(nullptr)
   , dialogueWindow(nullptr)
   , classChoiceDialog(nullptr)
@@ -93,7 +92,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete nameDialog;
     delete raceDialog;
     delete dialogueWindow;
     delete classChoiceDialog;
@@ -103,6 +101,11 @@ WindowManager::~WindowManager()
     delete createClassDialog;
     delete birthSignDialog;
     delete reviewDialog;
+
+    for (WindowMap::iterator it = mWindows.begin(); it != mWindows.end(); ++it)
+    {
+        delete it->second;
+    }
 
     cleanupGarbage();
 }
@@ -181,8 +184,14 @@ void WindowManager::updateVisible()
 
     if (mode == GM_Name)
     {
-        if (nameDialog)
-            removeDialog(nameDialog);
+        TextInputDialog* nameDialog = static_cast<TextInputDialog*>(getWindow("nameDialog"));
+
+        if(nameDialog)
+        {
+            removeWindow(nameDialog);
+            nameDialog = NULL;
+        }
+
         nameDialog = new TextInputDialog(*this);
         std::string sName = getGameSettingString("sName", "Name");
         nameDialog->setTextLabel(sName);
@@ -191,6 +200,7 @@ void WindowManager::updateVisible()
         nameDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onNameDialogDone);
         nameDialog->eventSaveName = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerName);
         nameDialog->open();
+        addWindow("nameDialog", nameDialog);
         return;
     }
 
@@ -447,6 +457,38 @@ void WindowManager::updateSkillArea()
     stats->updateSkillArea();
 }
 
+
+WindowBase* WindowManager::getWindow(const std::string& parName)
+{
+    WindowMap::iterator it;
+    it = mWindows.find(parName);
+    if(it != mWindows.end())
+    {
+        return it->second;
+    }
+    return NULL;
+}
+
+void WindowManager::addWindow(const std::string& parName, WindowBase* parWindow)
+{
+    mWindows.insert(WindowMap::value_type(parName, parWindow));
+}
+
+void WindowManager::removeWindow(WindowBase* parWindow)
+{
+    assert(parWindow);
+    parWindow->setVisible(false);
+    for (WindowMap::iterator it = mWindows.begin(); it != mWindows.end(); ++it)
+    {
+        if(it->second == parWindow)
+        {
+            delete it->second;
+            mWindows.erase(it);
+            break;
+        }
+    }
+}
+
 void WindowManager::removeDialog(OEngine::GUI::Layout*dialog)
 {
     assert(dialog);
@@ -484,10 +526,7 @@ const std::string &WindowManager::getGameSettingString(const std::string &id, co
 
 void WindowManager::onNameDialogDone(WindowBase* parWindow)
 {
-    if (nameDialog)
-    {
-        removeDialog(nameDialog);
-    }
+    removeWindow(parWindow);
 
     // Go to next dialog if name was previously chosen
     if (creationStage == ReviewNext)

@@ -52,7 +52,6 @@ namespace MWGui
   class InventoryWindow;
   class Console;
 
-  class TextInputDialog;
   class InfoBoxDialog;
   class RaceDialog;
   class DialogueWindow;
@@ -92,7 +91,6 @@ namespace MWGui
     Console *console;
 
     // Character creation
-    TextInputDialog *nameDialog;
     RaceDialog *raceDialog;
     DialogueWindow *dialogueWindow;
     ClassChoiceDialog *classChoiceDialog;
@@ -102,6 +100,8 @@ namespace MWGui
     CreateClassDialog *createClassDialog;
     BirthDialog *birthSignDialog;
     ReviewDialog *reviewDialog;
+    typedef std::map<std::string, WindowBase*> WindowMap;
+    WindowMap mWindows;
 
     // Keeps track of current step in Generate Class dialogs
     unsigned generateClassStep;
@@ -247,6 +247,10 @@ namespace MWGui
 
     void removeDialog(OEngine::GUI::Layout* dialog);
     ///< Hides dialog and schedules dialog to be deleted.
+
+    WindowBase* getWindow(const std::string& parName);
+    void addWindow(const std::string& parName, WindowBase* parWindow);
+    void removeWindow(WindowBase* parWindow);
     
     void messageBox (const std::string& message, const std::vector<std::string>& buttons);
     
