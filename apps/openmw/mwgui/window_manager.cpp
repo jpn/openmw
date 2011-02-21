@@ -213,6 +213,7 @@ void WindowManager::updateVisible()
         raceDialog->setRaceId(playerRaceId);
         raceDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onRaceDialogDone);
         raceDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onRaceDialogBack);
+        raceDialog->eventSave = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerRace);
         raceDialog->open();
         return;
     }
@@ -544,9 +545,6 @@ void WindowManager::onRaceDialogDone(WindowBase* parWindow)
 {
     if (raceDialog)
     {
-        playerRaceId = raceDialog->getRaceId();
-        if (!playerRaceId.empty())
-            environment.mMechanicsManager->setPlayerRace(playerRaceId, raceDialog->getGender() == RaceDialog::GM_Male);
         removeDialog(raceDialog);
     }
 
@@ -576,9 +574,6 @@ void WindowManager::onRaceDialogBack()
 {
     if (raceDialog)
     {
-        playerRaceId = raceDialog->getRaceId();
-        if (!playerRaceId.empty())
-            environment.mMechanicsManager->setPlayerRace(playerRaceId, raceDialog->getGender() == RaceDialog::GM_Male);
         removeDialog(raceDialog);
     }
 

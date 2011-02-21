@@ -149,11 +149,17 @@ int wrap(int index, int max)
 
 void RaceDialog::onOkClicked(MyGUI::Widget* _sender)
 {
+    if (!currentRaceId.empty())
+        eventSave(currentRaceId, getGender() == GM_Male);
+
     eventDone(this);
 }
 
 void RaceDialog::onBackClicked(MyGUI::Widget* _sender)
 {
+    if (!currentRaceId.empty())
+        eventSave(currentRaceId, getGender() == GM_Male);
+
     eventBack();
 }
 
