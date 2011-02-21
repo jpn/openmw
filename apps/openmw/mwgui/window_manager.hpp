@@ -114,9 +114,6 @@ namespace MWGui
      */
     bool needModeChange;
 
-    std::vector<OEngine::GUI::Layout*> garbageDialogs;
-    void cleanupGarbage();
-
     // Currently shown windows in inventory mode
     GuiWindow shown;
 
@@ -221,13 +218,6 @@ namespace MWGui
     void updateSkillArea();
     ///< update display of skills, factions, birth sign, reputation and bounty
 
-    template<typename T>
-    void removeDialog(T*& dialog);
-    ///< Casts to OEngine::GUI::Layout and calls removeDialog, then resets pointer to nullptr.
-
-    void removeDialog(OEngine::GUI::Layout* dialog);
-    ///< Hides dialog and schedules dialog to be deleted.
-
     WindowBase* getWindow(const std::string& parName);
     void addWindow(const std::string& parName, WindowBase* parWindow);
     void removeWindow(WindowBase* parWindow);
@@ -300,14 +290,6 @@ namespace MWGui
     // Which state the character creating is in, controls back/next/ok buttons
     CreationStageEnum creationStage;
   };
-
-  template<typename T>
-  void WindowManager::removeDialog(T*& dialog)
-  {
-      OEngine::GUI::Layout *d = static_cast<OEngine::GUI::Layout*>(dialog);
-      removeDialog(d);
-      dialog = 0;
-  }
 }
 
 #endif

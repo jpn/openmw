@@ -83,31 +83,14 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-
     for (WindowMap::iterator it = mWindows.begin(); it != mWindows.end(); ++it)
     {
         delete it->second;
-    }
-
-    cleanupGarbage();
-}
-
-void WindowManager::cleanupGarbage()
-{
-    // Delete any dialogs which are no longer in use
-    if (!garbageDialogs.empty())
-    {
-        for (std::vector<OEngine::GUI::Layout*>::iterator it = garbageDialogs.begin(); it != garbageDialogs.end(); ++it)
-        {
-            delete *it;
-        }
-        garbageDialogs.clear();
     }
 }
 
 void WindowManager::update()
 {
-    cleanupGarbage();
     if (needModeChange)
     {
         needModeChange = false;
@@ -484,18 +467,11 @@ void WindowManager::removeWindow(WindowBase* parWindow)
         {
             delete it->second;
             mWindows.erase(it);
-            break;
+            return;
         }
     }
-}
 
-void WindowManager::removeDialog(OEngine::GUI::Layout*dialog)
-{
-    assert(dialog);
-    if (!dialog)
-        return;
-    dialog->setVisible(false);
-    garbageDialogs.push_back(dialog);
+    delete parWindow;
 }
 
 void WindowManager::messageBox (const std::string& message, const std::vector<std::string>& buttons)

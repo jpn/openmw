@@ -645,7 +645,7 @@ void CreateClassDialog::onDescriptionClicked(MyGUI::Widget* _sender)
 void CreateClassDialog::onDescriptionEntered(WindowBase* parWindow)
 {
     description = descDialog->getTextInput();
-    mWindowManager.removeDialog(descDialog);
+    mWindowManager.removeWindow(descDialog);
 }
 
 void CreateClassDialog::onOkClicked(MyGUI::Widget* _sender)
