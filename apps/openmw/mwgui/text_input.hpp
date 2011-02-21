@@ -27,6 +27,10 @@ namespace MWGui
         void setTextLabel(const std::string &label);
         void open();
 
+        typedef delegates::CDelegate1<const std::string&> EventHandle_String;
+
+        EventHandle_String eventSaveName;
+
     protected:
         void onOkClicked(MyGUI::Widget* _sender);
         void onTextAccepted(MyGUI::Edit* _sender);

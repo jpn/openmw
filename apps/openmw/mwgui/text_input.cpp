@@ -53,10 +53,12 @@ void TextInputDialog::open()
 
 void TextInputDialog::onOkClicked(MyGUI::Widget* _sender)
 {
+    eventSaveName(getTextInput());
     eventDone(this);
 }
 
 void TextInputDialog::onTextAccepted(MyGUI::Edit* _sender)
 {
+    eventSaveName(getTextInput());
     eventDone(this);
 }

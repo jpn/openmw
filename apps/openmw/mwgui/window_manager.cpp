@@ -189,6 +189,7 @@ void WindowManager::updateVisible()
         nameDialog->setTextInput(playerName);
         nameDialog->setNextButtonShow(creationStage >= NameChosen);
         nameDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onNameDialogDone);
+        nameDialog->eventSaveName = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerName);
         nameDialog->open();
         return;
     }
@@ -485,8 +486,6 @@ void WindowManager::onNameDialogDone(WindowBase* parWindow)
 {
     if (nameDialog)
     {
-        playerName = nameDialog->getTextInput();
-        environment.mMechanicsManager->setPlayerName(playerName);
         removeDialog(nameDialog);
     }
 
