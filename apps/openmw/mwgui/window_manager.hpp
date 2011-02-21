@@ -52,7 +52,6 @@ namespace MWGui
   class InventoryWindow;
   class Console;
 
-  class DialogueWindow;
   class ClassChoiceDialog;
   class GenerateClassResultDialog;
   class PickClassDialog;
@@ -89,7 +88,6 @@ namespace MWGui
     Console *console;
 
     // Character creation
-    DialogueWindow *dialogueWindow;
     ClassChoiceDialog *classChoiceDialog;
     GenerateClassResultDialog *generateClassResultDialog;
     PickClassDialog *pickClassDialog;

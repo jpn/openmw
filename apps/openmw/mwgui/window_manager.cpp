@@ -24,7 +24,6 @@ using namespace MWGui;
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
   : environment(environment)
-  , dialogueWindow(nullptr)
   , classChoiceDialog(nullptr)
   , generateClassResultDialog(nullptr)
   , pickClassDialog(nullptr)
@@ -90,7 +89,6 @@ WindowManager::~WindowManager()
     delete inventory;
 #endif
 
-    delete dialogueWindow;
     delete classChoiceDialog;
     delete generateClassResultDialog;
     delete pickClassDialog;
@@ -334,10 +332,12 @@ void WindowManager::updateVisible()
 
     if (mode == GM_Dialogue)
     {
+        DialogueWindow* dialogueWindow = static_cast<DialogueWindow*>(getWindow("dialogueWindow"));
         if (!dialogueWindow)
         {
             dialogueWindow = new DialogueWindow(*this);
             dialogueWindow->eventBye = MyGUI::newDelegate(this, &WindowManager::onDialogueWindowBye);
+            addWindow("dialogueWindow", dialogueWindow);
         }
         dialogueWindow->open();
         return;
@@ -560,10 +560,11 @@ void WindowManager::onRaceDialogDone(WindowBase* parWindow)
 
 void WindowManager::onDialogueWindowBye()
 {
+    DialogueWindow* dialogueWindow = static_cast<DialogueWindow*>(getWindow("dialogueWindow"));
     if (dialogueWindow)
     {
         //FIXME set some state and stuff?
-        removeDialog(dialogueWindow);
+        removeWindow(dialogueWindow);
     }
     setGuiMode(GM_Game);
 }
