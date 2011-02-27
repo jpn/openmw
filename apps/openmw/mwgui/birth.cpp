@@ -97,7 +97,7 @@ void BirthDialog::onOkClicked(MyGUI::Widget* _sender)
 
 void BirthDialog::onBackClicked(MyGUI::Widget* _sender)
 {
-    eventBack();
+    eventBack(this);
 }
 
 void BirthDialog::onSelectBirth(MyGUI::List* _sender, size_t _index)

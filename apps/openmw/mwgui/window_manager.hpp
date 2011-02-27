@@ -218,6 +218,7 @@ namespace MWGui
     void updateSkillArea();
     ///< update display of skills, factions, birth sign, reputation and bounty
 
+    const std::string getWindowName(WindowBase* parWindow);
     WindowBase* getWindow(const std::string& parName);
     void addWindow(const std::string& parName, WindowBase* parWindow);
     void removeWindow(WindowBase* parWindow);
@@ -244,12 +245,11 @@ namespace MWGui
 
     void onDialogueWindowBye();
 
-    // Character generation: Name dialog
-    void onNameDialogDone(WindowBase* parWindow);
+    // Dialog done
+    void onDialogDone(WindowBase* parWindow);
 
-    // Character generation: Race dialog
-    void onRaceDialogDone(WindowBase* parWindow);
-    void onRaceDialogBack();
+    // Dialog back
+    void onDialogBack(WindowBase* parWindow);
 
     // Character generation: Choose class process
     void onClassChoice(int _index);
@@ -257,24 +257,19 @@ namespace MWGui
     // Character generation: Generate Class
     void showClassQuestionDialog();
     void onClassQuestionChosen(int _index);
-    void onGenerateClassBack();
     void onGenerateClassDone(WindowBase* parWindow);
 
     // Character generation: Pick Class dialog
     void onPickClassDialogDone(WindowBase* parWindow);
-    void onPickClassDialogBack();
 
     // Character generation: Create Class dialog
     void onCreateClassDialogDone(WindowBase* parWindow);
-    void onCreateClassDialogBack();
 
     // Character generation: Birth sign dialog
     void onBirthSignDialogDone(WindowBase* parWindow);
-    void onBirthSignDialogBack();
 
     // Character generation: Review dialog
     void onReviewDialogDone(WindowBase* parWindow);
-    void onReviewDialogBack();
     void onReviewActivateDialog(int parDialog);
 
     enum CreationStageEnum

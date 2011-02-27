@@ -63,7 +63,7 @@ void GenerateClassResultDialog::onOkClicked(MyGUI::Widget* _sender)
 
 void GenerateClassResultDialog::onBackClicked(MyGUI::Widget* _sender)
 {
-    eventBack();
+    eventBack(this);
 }
 
 /* PickClassDialog */
@@ -174,7 +174,7 @@ void PickClassDialog::onOkClicked(MyGUI::Widget* _sender)
 
 void PickClassDialog::onBackClicked(MyGUI::Widget* _sender)
 {
-    eventBack();
+    eventBack(this);
 }
 
 void PickClassDialog::onSelectClass(MyGUI::List* _sender, size_t _index)
@@ -655,7 +655,7 @@ void CreateClassDialog::onOkClicked(MyGUI::Widget* _sender)
 
 void CreateClassDialog::onBackClicked(MyGUI::Widget* _sender)
 {
-    eventBack();
+    eventBack(this);
 }
 
 /* SelectSpecializationDialog */

@@ -344,7 +344,7 @@ void ReviewDialog::onOkClicked(MyGUI::Widget* _sender)
 
 void ReviewDialog::onBackClicked(MyGUI::Widget* _sender)
 {
-    eventBack();
+    eventBack(this);
 }
 
 void ReviewDialog::onNameClicked(MyGUI::Widget* _sender)

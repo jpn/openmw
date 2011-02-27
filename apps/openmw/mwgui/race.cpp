@@ -160,7 +160,7 @@ void RaceDialog::onBackClicked(MyGUI::Widget* _sender)
     if (!currentRaceId.empty())
         eventSave(currentRaceId, getGender() == GM_Male);
 
-    eventBack();
+    eventBack(this);
 }
 
 void RaceDialog::onHeadRotate(MyGUI::VScroll*, size_t _position)

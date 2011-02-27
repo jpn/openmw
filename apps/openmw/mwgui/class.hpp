@@ -78,12 +78,7 @@ namespace MWGui
         void open();
 
         // Events
-        typedef delegates::CDelegate0 EventHandle_Void;
-
-        /** Event : Back button clicked.\n
-            signature : void method()\n
-        */
-        EventHandle_Void eventBack;
+        EventHandle_WindowBase eventBack;
 
     protected:
         void onOkClicked(MyGUI::Widget* _sender);
@@ -108,12 +103,7 @@ namespace MWGui
         void open();
 
         // Events
-        typedef delegates::CDelegate0 EventHandle_Void;
-
-        /** Event : Back button clicked.\n
-            signature : void method()\n
-        */
-        EventHandle_Void eventBack;
+        EventHandle_WindowBase eventBack;
 
     protected:
         void onSelectClass(MyGUI::List* _sender, size_t _index);
@@ -264,12 +254,7 @@ namespace MWGui
         void open();
 
         // Events
-        typedef delegates::CDelegate0 EventHandle_Void;
-
-        /** Event : Back button clicked.\n
-            signature : void method()\n
-        */
-        EventHandle_Void eventBack;
+        EventHandle_WindowBase eventBack;
 
     protected:
         void onOkClicked(MyGUI::Widget* _sender);

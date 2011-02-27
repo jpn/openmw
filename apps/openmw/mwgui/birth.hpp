@@ -32,12 +32,7 @@ namespace MWGui
         void open();
 
         // Events
-        typedef delegates::CDelegate0 EventHandle_Void;
-
-        /** Event : Back button clicked.\n
-            signature : void method()\n
-        */
-        EventHandle_Void eventBack;
+        EventHandle_WindowBase eventBack;
 
     protected:
         void onSelectBirth(MyGUI::List* _sender, size_t _index);

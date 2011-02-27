@@ -46,13 +46,9 @@ namespace MWGui
         void open();
 
         // Events
-        typedef delegates::CDelegate0 EventHandle_Void;
         typedef delegates::CDelegate2<const std::string&, bool> EventHandle_StringBool;
 
-        /** Event : Back button clicked.\n
-            signature : void method()\n
-        */
-        EventHandle_Void eventBack;
+        EventHandle_WindowBase eventBack;
         EventHandle_StringBool eventSave;
 
     protected:
