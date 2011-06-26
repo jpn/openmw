@@ -17,8 +17,17 @@
             <Property key="Edit_VisibleVScroll" value="1" />
         </Widget>
 
+        <!-- The Disposition -->
+        <Widget type="Progress" skin="MW_Progress_Blue" position="432 39 132 30" name="NpcDisposition" align="ALIGN_LEFT ALIGN_TOP">
+            <Property key="Progress_Range" value="100"/>
+            <Property key="Progress_Position" value="50"/>
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Progress_StartPoint" value="Left"/>
+            <Property key="Progress_AutoTrack" value="false"/>
+        </Widget>
+
         <!-- The list of topics -->
-        <Widget type="List" skin="MW_List" position="432 39 132 341" name="TopicsList">
+        <Widget type="List" skin="MW_List" position="432 75 132 300" name="TopicsList">
         </Widget>
 
         <!-- The Goodbye button -->
