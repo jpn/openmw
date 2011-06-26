@@ -268,8 +268,6 @@ namespace MWGui
 
   private:
 
-    void onDialogueWindowBye();
-
     // Character generation: Name dialog
     void onNameDialogDone(WindowBase* parWindow);
 

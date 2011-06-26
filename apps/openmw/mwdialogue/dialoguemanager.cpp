@@ -205,10 +205,14 @@ namespace MWDialogue
             ESMS::LiveCellRef<ESM::NPC, MWWorld::RefData> *cellRef = actor.get<ESM::NPC>();
 
             if (!cellRef)
+            {
                 return false;
+            }
 
             if (toLower (info.clas)!=toLower (cellRef->base->cls))
+            {
                 return false;
+            }
         }
 
         if (!info.npcFaction.empty())
@@ -226,8 +230,12 @@ namespace MWDialogue
 
         // check cell
         if (!info.cell.empty())
+        {
             if (mEnvironment.mWorld->getPlayer().getPlayer().getCell()->cell->name != info.cell)
+            {
                 return false;
+            }
+        }
 
         // TODO check DATAstruct
 
@@ -247,18 +255,70 @@ namespace MWDialogue
         return true;
     }
 
-    DialogueManager::DialogueManager (MWWorld::Environment& environment) : mEnvironment (environment) {}
+    DialogueManager::DialogueManager (MWWorld::Environment& environment) :
+        mEnvironment (environment)
+        , mActor()
+        , mTopics()
+    {
+        mDiaInt = NULL;
+    }
+
+    void DialogueManager::updateTopics()
+    {
+        mTopics.clear();
+        std::map<std::string,ESM::Dialogue>::const_iterator i = mEnvironment.mWorld->getStore().dialogs.list.begin();
+        while(i != mEnvironment.mWorld->getStore().dialogs.list.end())
+        {
+            if(i->second.type == ESM::Dialogue::Topic)
+            {
+                bool include = false;
+                for (std::vector<ESM::DialInfo>::const_iterator j = i->second.mInfo.begin(); j != i->second.mInfo.end(); ++j)
+                {
+                    if (isMatching(mActor, *j))
+                    {
+                        include = true;
+                        break;
+                    }
+                }
+
+                if(include)
+                {
+                    mTopics.push_back(i->first);
+                }
+            }
+            i++;
+        }
+    }
 
     void DialogueManager::startDialogue (const MWWorld::Ptr& actor)
     {
-        std::cout << "talking with " << MWWorld::Class::get (actor).getName (actor) << std::endl;
+        mActor = actor;
 
-        const ESM::Dialogue *dialogue = mEnvironment.mWorld->getStore().dialogs.find ("hello");
+        std::string theName = MWWorld::Class::get(mActor).getName(mActor);
+        int theDisposition = 100; //FIXME set this to proper dispisition
 
-        for (std::vector<ESM::DialInfo>::const_iterator iter (dialogue->mInfo.begin());
-            iter!=dialogue->mInfo.end(); ++iter)
+        std::cout << "talking with " << theName << std::endl;
+
+        //Update the list of available topics
+        updateTopics();
+
+        //Say hello
+        DialogueMessage theAnswer = getAnswer(std::string("hello"));
+
+        if(mDiaInt)
+            mDiaInt->startDialogue(theName, theDisposition, theAnswer, mTopics);
+    }
+
+    const DialogueMessage DialogueManager::getAnswer(const std::string& parTopic, int parCond)
+    {
+        DialogueMessage theAnswer;
+
+        std::cout << "Saying '"<< parTopic << "' to " << MWWorld::Class::get(mActor).getName(mActor) << std::endl;
+        const ESM::Dialogue *dialogue = mEnvironment.mWorld->getStore().dialogs.find(parTopic);
+
+        for (std::vector<ESM::DialInfo>::const_iterator iter (dialogue->mInfo.begin()); iter!=dialogue->mInfo.end(); ++iter)
         {
-            if (isMatching (actor, *iter))
+            if (isMatching (mActor, *iter))
             {
                 // start dialogue
                 std::cout << "found matching info record" << std::endl;
@@ -277,9 +337,26 @@ namespace MWDialogue
                 }
 
                 mEnvironment.mInputManager->setGuiMode(MWGui::GM_Dialogue);
+
+                theAnswer.mHeading = parTopic;
+                theAnswer.mText = iter->response;
                 break;
             }
         }
+        return theAnswer;
     }
 
+    void DialogueManager::selectTopic(const std::string& parTopic, int parCond)
+    {
+        DialogueMessage theAnswer;
+        theAnswer = getAnswer(parTopic, parCond);
+        if(mDiaInt)
+            mDiaInt->addAnswer(theAnswer);
+    }
+
+    void DialogueManager::endDialogue()
+    {
+        //mActor = NULL;
+        mEnvironment.mInputManager->setGuiMode(MWGui::GM_Game);
+    }
 }

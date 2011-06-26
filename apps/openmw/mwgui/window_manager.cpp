@@ -324,7 +324,9 @@ void WindowManager::updateVisible()
         if (!dialogueWindow)
         {
             dialogueWindow = new DialogueWindow(*this);
-            dialogueWindow->eventBye = MyGUI::newDelegate(this, &WindowManager::onDialogueWindowBye);
+            environment.mDialogueManager->setUi(dialogueWindow);
+            dialogueWindow->eventTopicSelected = MyGUI::newDelegate(environment.mDialogueManager, &MWDialogue::DialogueManager::selectTopic);
+            dialogueWindow->eventBye = MyGUI::newDelegate(environment.mDialogueManager, &MWDialogue::DialogueManager::endDialogue);
         }
         dialogueWindow->open();
         return;
@@ -522,16 +524,6 @@ void WindowManager::onRaceDialogDone(WindowBase* parWindow)
         creationStage = RaceChosen;
         setGuiMode(GM_Game);
     }
-}
-
-void WindowManager::onDialogueWindowBye()
-{
-    if (dialogueWindow)
-    {
-        //FIXME set some state and stuff?
-        removeDialog(dialogueWindow);
-    }
-    setGuiMode(GM_Game);
 }
 
 void WindowManager::onRaceDialogBack()
