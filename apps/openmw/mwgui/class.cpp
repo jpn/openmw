@@ -505,6 +505,31 @@ std::vector<ESM::Skill::SkillEnum> CreateClassDialog::getMinorSkills() const
     return v;
 }
 
+ESM::Class CreateClassDialog::getClass()
+{
+    ESM::Class theClass;
+    theClass.name = getName();
+    theClass.description = getDescription();
+    theClass.data.specialization = getSpecializationId();
+    theClass.data.isPlayable = 0x1;
+
+    std::vector<int> attributes = getFavoriteAttributes();
+    assert(attributes.size() == 2);
+    theClass.data.attribute[0] = attributes[0];
+    theClass.data.attribute[1] = attributes[1];
+
+    std::vector<ESM::Skill::SkillEnum> majorSkills = getMajorSkills();
+    std::vector<ESM::Skill::SkillEnum> minorSkills = getMinorSkills();
+    assert(majorSkills.size() >= sizeof(theClass.data.skills)/sizeof(theClass.data.skills[0]));
+    assert(minorSkills.size() >= sizeof(theClass.data.skills)/sizeof(theClass.data.skills[0]));
+    for (size_t i = 0; i < sizeof(theClass.data.skills)/sizeof(theClass.data.skills[0]); ++i)
+    {
+        theClass.data.skills[i][1] = majorSkills[i];
+        theClass.data.skills[i][0] = minorSkills[i];
+    }
+    return theClass;
+}
+
 void CreateClassDialog::setNextButtonShow(bool shown)
 {
     MyGUI::ButtonPtr descriptionButton;

@@ -249,6 +249,7 @@ namespace MWGui
         std::vector<int> getFavoriteAttributes() const;
         std::vector<ESM::Skill::SkillEnum> getMajorSkills() const;
         std::vector<ESM::Skill::SkillEnum> getMinorSkills() const;
+        ESM::Class getClass();
 
         void setNextButtonShow(bool shown);
         void open();

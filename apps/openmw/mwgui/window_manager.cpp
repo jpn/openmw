@@ -695,29 +695,9 @@ void WindowManager::onCreateClassDialogDone(WindowBase* parWindow)
     CreateClassDialog* createClassDialog = static_cast<CreateClassDialog*>(getWindow("createClassDialog"));
     if (createClassDialog)
     {
-        ESM::Class klass;
-        klass.name = createClassDialog->getName();
-        klass.description = createClassDialog->getDescription();
-        klass.data.specialization = createClassDialog->getSpecializationId();
-        klass.data.isPlayable = 0x1;
-
-        std::vector<int> attributes = createClassDialog->getFavoriteAttributes();
-        assert(attributes.size() == 2);
-        klass.data.attribute[0] = attributes[0];
-        klass.data.attribute[1] = attributes[1];
-
-        std::vector<ESM::Skill::SkillEnum> majorSkills = createClassDialog->getMajorSkills();
-        std::vector<ESM::Skill::SkillEnum> minorSkills = createClassDialog->getMinorSkills();
-        assert(majorSkills.size() >= sizeof(klass.data.skills)/sizeof(klass.data.skills[0]));
-        assert(minorSkills.size() >= sizeof(klass.data.skills)/sizeof(klass.data.skills[0]));
-        for (size_t i = 0; i < sizeof(klass.data.skills)/sizeof(klass.data.skills[0]); ++i)
-        {
-            klass.data.skills[i][1] = majorSkills[i];
-            klass.data.skills[i][0] = minorSkills[i];
-        }
-        environment.mMechanicsManager->setPlayerClass(klass);
-        mPlayerData.playerClass = klass;
-
+        ESM::Class theClass = createClassDialog->getClass();
+        environment.mMechanicsManager->setPlayerClass(theClass);
+        mPlayerData.playerClass = theClass;
         removeWindow(createClassDialog);
     }
 
