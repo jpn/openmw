@@ -260,33 +260,7 @@ void WindowManager::updateVisible()
         ReviewDialog* reviewDialog = static_cast<ReviewDialog*>(getWindow("reviewDialog"));
         if (reviewDialog)
             removeWindow(reviewDialog);
-        reviewDialog = new ReviewDialog(*this);
-        //TODO send struct instead
-        reviewDialog->setPlayerName(mPlayerData.playerName);
-        reviewDialog->setRace(mPlayerData.playerRaceId);
-        reviewDialog->setClass(mPlayerData.playerClass);
-        reviewDialog->setBirthSign(mPlayerData.playerBirthSignId);
-        reviewDialog->setHealth(mPlayerData.playerHealth);
-        reviewDialog->setMagicka(mPlayerData.playerMagicka);
-        reviewDialog->setFatigue(mPlayerData.playerFatigue);
-
-        {
-            std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator end = mPlayerData.playerAttributes.end();
-            for (std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator it = mPlayerData.playerAttributes.begin(); it != end; ++it)
-            {
-                reviewDialog->setAttribute(it->first, it->second);
-            }
-        }
-
-        {
-            std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator end = mPlayerData.playerSkillValues.end();
-            for (std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator it = mPlayerData.playerSkillValues.begin(); it != end; ++it)
-            {
-                reviewDialog->setSkillValue(it->first, it->second);
-            }
-            reviewDialog->configureSkills(mPlayerData.playerMajorSkills, mPlayerData.playerMinorSkills);
-        }
-
+        reviewDialog = new ReviewDialog(*this, mPlayerData);
         reviewDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onReviewDialogDone);
         reviewDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
         reviewDialog->eventActivateDialog = MyGUI::newDelegate(this, &WindowManager::onReviewActivateDialog);

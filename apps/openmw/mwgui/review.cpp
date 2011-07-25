@@ -20,6 +20,11 @@ ReviewDialog::ReviewDialog(WindowManager& parWindowManager)
     : WindowBase("openmw_chargen_review_layout.xml", parWindowManager)
     , lastPos(0)
 {
+    init();
+}
+
+void ReviewDialog::init()
+{
     // Centre dialog
     center();
 
@@ -94,6 +99,37 @@ ReviewDialog::ReviewDialog(WindowManager& parWindowManager)
     MyGUI::ButtonPtr okButton;
     getWidget(okButton, "OKButton");
     okButton->eventMouseButtonClick = MyGUI::newDelegate(this, &ReviewDialog::onOkClicked);
+}
+
+ReviewDialog::ReviewDialog(WindowManager& parWindowManager, PlayerData& parPlayerData)
+    : WindowBase("openmw_chargen_review_layout.xml", parWindowManager)
+    , lastPos(0)
+{
+    init();
+    setPlayerName(parPlayerData.playerName);
+    setRace(parPlayerData.playerRaceId);
+    setClass(parPlayerData.playerClass);
+    setBirthSign(parPlayerData.playerBirthSignId);
+    setHealth(parPlayerData.playerHealth);
+    setMagicka(parPlayerData.playerMagicka);
+    setFatigue(parPlayerData.playerFatigue);
+
+    {
+        std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator end = parPlayerData.playerAttributes.end();
+        for (std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator it = parPlayerData.playerAttributes.begin(); it != end; ++it)
+        {
+            setAttribute(it->first, it->second);
+        }
+    }
+
+    {
+        std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator end = parPlayerData.playerSkillValues.end();
+        for (std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator it = parPlayerData.playerSkillValues.begin(); it != end; ++it)
+        {
+            setSkillValue(it->first, it->second);
+        }
+        configureSkills(parPlayerData.playerMajorSkills, parPlayerData.playerMinorSkills);
+    }
 }
 
 void ReviewDialog::open()

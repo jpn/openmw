@@ -4,11 +4,7 @@
 #include "window_base.hpp"
 #include "../mwmechanics/stat.hpp"
 #include "widgets.hpp"
-
-namespace MWGui
-{
-    class WindowManager;
-}
+#include "window_manager.hpp"
 
 /*
 This file contains the dialog for reviewing the generated character.
@@ -31,6 +27,7 @@ namespace MWGui
         typedef std::vector<int> SkillList;
 
         ReviewDialog(WindowManager& parWindowManager);
+        ReviewDialog(WindowManager& parWindowManager, PlayerData& parPlayerData);
 
         void setPlayerName(const std::string &name);
         void setRace(const std::string &raceId);
@@ -69,6 +66,7 @@ namespace MWGui
             CS_Normal,
             CS_Super
         };
+        void init();
         void setStyledText(MyGUI::StaticTextPtr widget, ColorStyle style, const std::string &value);
         void addSkills(const SkillList &skills, const std::string &titleId, const std::string &titleDefault, MyGUI::IntCoord &coord1, MyGUI::IntCoord &coord2);
         void addSeparator(MyGUI::IntCoord &coord1, MyGUI::IntCoord &coord2);
