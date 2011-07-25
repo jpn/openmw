@@ -51,15 +51,8 @@ namespace MWGui
   class StatsWindow;
   class InventoryWindow;
   class Console;
-
+  class ClassQuestions;
   class MessageBoxManager;
-  struct ClassPoint
-  {
-      const char *id;
-      // Specialization points to match, in order: Stealth, Combat, Magic
-      // Note: Order is taken from http://www.uesp.net/wiki/Morrowind:Class_Quiz
-      unsigned int points[3];
-  };
 
   class WindowManager
   {
@@ -74,6 +67,7 @@ namespace MWGui
     MapWindow *map;
     MainMenu *menu;
     StatsWindow *stats;
+    ClassQuestions *mClassQuestions;
     MessageBoxManager *mMessageBoxManager;
 #if 0
     InventoryWindow *inventory;
@@ -84,9 +78,9 @@ namespace MWGui
     WindowMap mWindows;
 
     // Keeps track of current step in Generate Class dialogs
-    unsigned generateClassStep;
+    //unsigned generateClassStep;
     // A counter for each specialization which is increased when an answer is chosen, in order: Stealth, Combat, Magic
-    unsigned generateClassSpecializations[3];
+    //unsigned generateClassSpecializations[3];
     std::string generateClass;
 
     // Various stats about player as needed by window manager
