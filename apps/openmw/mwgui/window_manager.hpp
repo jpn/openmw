@@ -54,6 +54,23 @@ namespace MWGui
   class ClassQuestions;
   class MessageBoxManager;
 
+
+
+  typedef struct
+  {
+    std::string playerName;
+    ESM::Class playerClass;
+    std::string playerRaceId;
+    std::string playerBirthSignId;
+    std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> > playerAttributes;
+    std::vector<int> playerMajorSkills;
+    std::vector<int> playerMinorSkills;
+    std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> > playerSkillValues;
+    MWMechanics::DynamicStat<int> playerHealth;
+    MWMechanics::DynamicStat<int> playerMagicka;
+    MWMechanics::DynamicStat<int> playerFatigue;
+  } PlayerData;
+
   class WindowManager
   {
   public:
@@ -84,13 +101,7 @@ namespace MWGui
     std::string generateClass;
 
     // Various stats about player as needed by window manager
-    std::string playerName;
-    ESM::Class playerClass;
-    std::string playerRaceId, playerBirthSignId;
-    std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> > playerAttributes;
-    SkillList playerMajorSkills, playerMinorSkills;
-    std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> > playerSkillValues;
-    MWMechanics::DynamicStat<int> playerHealth, playerMagicka, playerFatigue;
+    PlayerData mPlayerData;
 
     // Gui
     MyGUI::Gui *gui;

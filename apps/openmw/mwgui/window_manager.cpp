@@ -61,12 +61,12 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     // Setup player stats
     for (int i = 0; i < ESM::Attribute::Length; ++i)
     {
-        playerAttributes.insert(std::make_pair(ESM::Attribute::attributeIds[i], MWMechanics::Stat<int>()));
+        mPlayerData.playerAttributes.insert(std::make_pair(ESM::Attribute::attributeIds[i], MWMechanics::Stat<int>()));
     }
 
     for (int i = 0; i < ESM::Skill::Length; ++i)
     {
-        playerSkillValues.insert(std::make_pair(ESM::Skill::skillIds[i], MWMechanics::Stat<float>()));
+        mPlayerData.playerSkillValues.insert(std::make_pair(ESM::Skill::skillIds[i], MWMechanics::Stat<float>()));
     }
 
     // Set up visibility
@@ -164,7 +164,7 @@ void WindowManager::updateVisible()
         nameDialog = new TextInputDialog(*this);
         std::string sName = getGameSettingString("sName", "Name");
         nameDialog->setTextLabel(sName);
-        nameDialog->setTextInput(playerName);
+        nameDialog->setTextInput(mPlayerData.playerName);
         nameDialog->setNextButtonShow(creationStage >= NameChosen);
         nameDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onDialogDone);
         nameDialog->eventSaveName = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerName);
@@ -183,7 +183,7 @@ void WindowManager::updateVisible()
         }
         raceDialog = new RaceDialog(*this);
         raceDialog->setNextButtonShow(creationStage >= RaceChosen);
-        raceDialog->setRaceId(playerRaceId);
+        raceDialog->setRaceId(mPlayerData.playerRaceId);
         raceDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onDialogDone);
         raceDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
         raceDialog->eventSave = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerRace);
@@ -219,7 +219,7 @@ void WindowManager::updateVisible()
             removeWindow(pickClassDialog);
         pickClassDialog = new PickClassDialog(*this);
         pickClassDialog->setNextButtonShow(creationStage >= ClassChosen);
-        pickClassDialog->setClassId(playerClass.name);
+        pickClassDialog->setClassId(mPlayerData.playerClass.name);
         pickClassDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onPickClassDialogDone);
         pickClassDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
         pickClassDialog->open();
@@ -247,7 +247,7 @@ void WindowManager::updateVisible()
             removeWindow(birthSignDialog);
         birthSignDialog = new BirthDialog(*this);
         birthSignDialog->setNextButtonShow(creationStage >= BirthSignChosen);
-        birthSignDialog->setBirthId(playerBirthSignId);
+        birthSignDialog->setBirthId(mPlayerData.playerBirthSignId);
         birthSignDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onBirthSignDialogDone);
         birthSignDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
         birthSignDialog->open();
@@ -261,30 +261,30 @@ void WindowManager::updateVisible()
         if (reviewDialog)
             removeWindow(reviewDialog);
         reviewDialog = new ReviewDialog(*this);
-        reviewDialog->setPlayerName(playerName);
-        reviewDialog->setRace(playerRaceId);
-        reviewDialog->setClass(playerClass);
-        reviewDialog->setBirthSign(playerBirthSignId);
-
-        reviewDialog->setHealth(playerHealth);
-        reviewDialog->setMagicka(playerMagicka);
-        reviewDialog->setFatigue(playerFatigue);
+        //TODO send struct instead
+        reviewDialog->setPlayerName(mPlayerData.playerName);
+        reviewDialog->setRace(mPlayerData.playerRaceId);
+        reviewDialog->setClass(mPlayerData.playerClass);
+        reviewDialog->setBirthSign(mPlayerData.playerBirthSignId);
+        reviewDialog->setHealth(mPlayerData.playerHealth);
+        reviewDialog->setMagicka(mPlayerData.playerMagicka);
+        reviewDialog->setFatigue(mPlayerData.playerFatigue);
 
         {
-            std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator end = playerAttributes.end();
-            for (std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator it = playerAttributes.begin(); it != end; ++it)
+            std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator end = mPlayerData.playerAttributes.end();
+            for (std::map<ESM::Attribute::AttributeID, MWMechanics::Stat<int> >::iterator it = mPlayerData.playerAttributes.begin(); it != end; ++it)
             {
                 reviewDialog->setAttribute(it->first, it->second);
             }
         }
 
         {
-            std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator end = playerSkillValues.end();
-            for (std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator it = playerSkillValues.begin(); it != end; ++it)
+            std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator end = mPlayerData.playerSkillValues.end();
+            for (std::map<ESM::Skill::SkillEnum, MWMechanics::Stat<float> >::iterator it = mPlayerData.playerSkillValues.begin(); it != end; ++it)
             {
                 reviewDialog->setSkillValue(it->first, it->second);
             }
-            reviewDialog->configureSkills(playerMajorSkills, playerMinorSkills);
+            reviewDialog->configureSkills(mPlayerData.playerMajorSkills, mPlayerData.playerMinorSkills);
         }
 
         reviewDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onReviewDialogDone);
@@ -364,7 +364,7 @@ void WindowManager::setValue (const std::string& id, const MWMechanics::Stat<int
     {
         if (id != ids[i])
             continue;
-        playerAttributes[attributes[i]] = value;
+        mPlayerData.playerAttributes[attributes[i]] = value;
         break;
     }
 }
@@ -373,7 +373,7 @@ void WindowManager::setValue (const std::string& id, const MWMechanics::Stat<int
 void WindowManager::setValue(const ESM::Skill::SkillEnum parSkill, const MWMechanics::Stat<float>& value)
 {
     stats->setValue(parSkill, value);
-    playerSkillValues[parSkill] = value;
+    mPlayerData.playerSkillValues[parSkill] = value;
 }
 
 void WindowManager::setValue (const std::string& id, const MWMechanics::DynamicStat<int>& value)
@@ -381,20 +381,20 @@ void WindowManager::setValue (const std::string& id, const MWMechanics::DynamicS
     stats->setValue (id, value);
     hud->setValue (id, value);
     if (id == "HBar")
-        playerHealth = value;
+        mPlayerData.playerHealth = value;
     else if (id == "MBar")
-        playerMagicka = value;
+        mPlayerData.playerMagicka = value;
     else if (id == "FBar")
-        playerFatigue = value;
+        mPlayerData.playerFatigue = value;
 }
 
 void WindowManager::setValue (const std::string& id, const std::string& value)
 {
     stats->setValue (id, value);
     if (id=="name")
-        playerName = value;
+        mPlayerData.playerName = value;
     else if (id=="race")
-        playerRaceId = value;
+        mPlayerData.playerRaceId = value;
 }
 
 void WindowManager::setValue (const std::string& id, int value)
@@ -404,15 +404,15 @@ void WindowManager::setValue (const std::string& id, int value)
 
 void WindowManager::setPlayerClass (const ESM::Class &class_)
 {
-    playerClass = class_;
-    stats->setValue("class", playerClass.name);
+    mPlayerData.playerClass = class_;
+    stats->setValue("class", mPlayerData.playerClass.name);
 }
 
 void WindowManager::configureSkills (const SkillList& major, const SkillList& minor)
 {
     stats->configureSkills (major, minor);
-    playerMajorSkills = major;
-    playerMinorSkills = minor;
+    mPlayerData.playerMajorSkills = major;
+    mPlayerData.playerMinorSkills = minor;
 }
 
 void WindowManager::setFactions (const FactionList& factions)
@@ -423,7 +423,7 @@ void WindowManager::setFactions (const FactionList& factions)
 void WindowManager::setBirthSign (const std::string &signId)
 {
     stats->setBirthSign (signId);
-    playerBirthSignId = signId;
+    mPlayerData.playerBirthSignId = signId;
 }
 
 void WindowManager::setReputation (int reputation)
@@ -700,7 +700,7 @@ void WindowManager::onPickClassDialogDone(WindowBase* parWindow)
             environment.mMechanicsManager->setPlayerClass(classId);
         const ESM::Class *klass = environment.mWorld->getStore().classes.find(classId);
         if (klass)
-            playerClass = *klass;
+            mPlayerData.playerClass = *klass;
         removeWindow(pickClassDialog);
     }
 
@@ -742,7 +742,7 @@ void WindowManager::onCreateClassDialogDone(WindowBase* parWindow)
             klass.data.skills[i][0] = minorSkills[i];
         }
         environment.mMechanicsManager->setPlayerClass(klass);
-        playerClass = klass;
+        mPlayerData.playerClass = klass;
 
         removeWindow(createClassDialog);
     }
@@ -764,9 +764,9 @@ void WindowManager::onBirthSignDialogDone(WindowBase* parWindow)
     BirthDialog* birthSignDialog = static_cast<BirthDialog*>(parWindow);
     if (birthSignDialog)
     {
-        playerBirthSignId = birthSignDialog->getBirthId();
-        if (!playerBirthSignId.empty())
-            environment.mMechanicsManager->setPlayerBirthsign(playerBirthSignId);
+        mPlayerData.playerBirthSignId = birthSignDialog->getBirthId();
+        if (!mPlayerData.playerBirthSignId.empty())
+            environment.mMechanicsManager->setPlayerBirthsign(mPlayerData.playerBirthSignId);
         removeWindow(birthSignDialog);
     }
 
