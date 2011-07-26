@@ -54,7 +54,15 @@ namespace MWGui
   class ClassQuestions;
   class MessageBoxManager;
 
-
+  enum CreationStageEnum
+  {
+      NotStarted,
+      NameChosen,
+      RaceChosen,
+      ClassChosen,
+      BirthSignChosen,
+      ReviewNext
+  };
 
   typedef struct
   {
@@ -69,6 +77,8 @@ namespace MWGui
     MWMechanics::DynamicStat<int> playerHealth;
     MWMechanics::DynamicStat<int> playerMagicka;
     MWMechanics::DynamicStat<int> playerFatigue;
+    // Which state the character creating is in, controls back/next/ok buttons
+    CreationStageEnum creationStage;
   } PlayerData;
 
   class WindowManager
@@ -276,19 +286,6 @@ namespace MWGui
     // Character generation: Review dialog
     void onReviewDialogDone(WindowBase* parWindow);
     void onReviewActivateDialog(int parDialog);
-
-    enum CreationStageEnum
-    {
-        NotStarted,
-        NameChosen,
-        RaceChosen,
-        ClassChosen,
-        BirthSignChosen,
-        ReviewNext
-    };
-
-    // Which state the character creating is in, controls back/next/ok buttons
-    CreationStageEnum creationStage;
   };
 }
 

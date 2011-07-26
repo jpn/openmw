@@ -34,7 +34,7 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
 {
     showFPSCounter = fpsSwitch;
 
-    creationStage = NotStarted;
+    mPlayerData.creationStage = NotStarted;
 
     //Register own widgets with MyGUI
     MyGUI::FactoryManager::getInstance().registerFactory<DialogeHistory>("Widget");
@@ -165,7 +165,7 @@ void WindowManager::updateVisible()
         std::string sName = getGameSettingString("sName", "Name");
         nameDialog->setTextLabel(sName);
         nameDialog->setTextInput(mPlayerData.playerName);
-        nameDialog->setNextButtonShow(creationStage >= NameChosen);
+        nameDialog->setNextButtonShow(mPlayerData.creationStage >= NameChosen);
         nameDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onDialogDone);
         nameDialog->eventSaveName = MyGUI::newDelegate(environment.mMechanicsManager, &MWMechanics::MechanicsManager::setPlayerName);
         nameDialog->open();
@@ -182,7 +182,7 @@ void WindowManager::updateVisible()
             raceDialog = NULL;
         }
         raceDialog = new RaceDialog(*this);
-        raceDialog->setNextButtonShow(creationStage >= RaceChosen);
+        raceDialog->setNextButtonShow(mPlayerData.creationStage >= RaceChosen);
         raceDialog->setRaceId(mPlayerData.playerRaceId);
         raceDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onDialogDone);
         raceDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
@@ -218,7 +218,7 @@ void WindowManager::updateVisible()
         if (pickClassDialog)
             removeWindow(pickClassDialog);
         pickClassDialog = new PickClassDialog(*this);
-        pickClassDialog->setNextButtonShow(creationStage >= ClassChosen);
+        pickClassDialog->setNextButtonShow(mPlayerData.creationStage >= ClassChosen);
         pickClassDialog->setClassId(mPlayerData.playerClass.name);
         pickClassDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onPickClassDialogDone);
         pickClassDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
@@ -246,7 +246,7 @@ void WindowManager::updateVisible()
         if (birthSignDialog)
             removeWindow(birthSignDialog);
         birthSignDialog = new BirthDialog(*this);
-        birthSignDialog->setNextButtonShow(creationStage >= BirthSignChosen);
+        birthSignDialog->setNextButtonShow(mPlayerData.creationStage >= BirthSignChosen);
         birthSignDialog->setBirthId(mPlayerData.playerBirthSignId);
         birthSignDialog->eventDone = MyGUI::newDelegate(this, &WindowManager::onBirthSignDialogDone);
         birthSignDialog->eventBack = MyGUI::newDelegate(this, &WindowManager::onDialogBack);
@@ -493,26 +493,26 @@ void WindowManager::onDialogDone(WindowBase* parWindow)
     if(theWindowName.compare("nameDialog") == 0)
     {
         // Go to next dialog if name was previously chosen
-        if (creationStage == ReviewNext)
+        if (mPlayerData.creationStage == ReviewNext)
             setGuiMode(GM_Review);
-        else if (creationStage >= NameChosen)
+        else if (mPlayerData.creationStage >= NameChosen)
             setGuiMode(GM_Race);
         else
         {
-            creationStage = NameChosen;
+            mPlayerData.creationStage = NameChosen;
             setGuiMode(GM_Game);
         }
     }
     else if(theWindowName.compare("raceDialog") == 0)
     {
         // Go to next dialog if race was previously chosen
-        if (creationStage == ReviewNext)
+        if (mPlayerData.creationStage == ReviewNext)
             setGuiMode(GM_Review);
-        else if(creationStage >= RaceChosen)
+        else if(mPlayerData.creationStage >= RaceChosen)
             setGuiMode(GM_Class);
         else
         {
-            creationStage = RaceChosen;
+            mPlayerData.creationStage = RaceChosen;
             setGuiMode(GM_Game);
         }
     }
@@ -521,13 +521,13 @@ void WindowManager::onDialogDone(WindowBase* parWindow)
         environment.mMechanicsManager->setPlayerClass(generateClass);
 
         // Go to next dialog if class was previously chosen
-        if (creationStage == ReviewNext)
+        if (mPlayerData.creationStage == ReviewNext)
             setGuiMode(GM_Review);
-        else if (creationStage >= ClassChosen)
+        else if (mPlayerData.creationStage >= ClassChosen)
             setGuiMode(GM_Birth);
         else
         {
-            creationStage = ClassChosen;
+            mPlayerData.creationStage = ClassChosen;
             setGuiMode(GM_Game);
         }
     }
@@ -560,8 +560,8 @@ void WindowManager::onDialogBack(WindowBase* parWindow)
     std::string theWindowName = getWindowName(parWindow);
     if(theWindowName.compare("generateClassResultDialog") == 0)
     {
-        if(creationStage < ClassChosen)
-            creationStage = ClassChosen;
+        if(mPlayerData.creationStage < ClassChosen)
+            mPlayerData.creationStage = ClassChosen;
         environment.mMechanicsManager->setPlayerClass(generateClass);
     }
     else if(theWindowName.compare("pickClassDialog") == 0)
@@ -679,13 +679,13 @@ void WindowManager::onPickClassDialogDone(WindowBase* parWindow)
     }
 
     // Go to next dialog if class was previously chosen
-    if (creationStage == ReviewNext)
+    if (mPlayerData.creationStage == ReviewNext)
         setGuiMode(GM_Review);
-    else if (creationStage >= ClassChosen)
+    else if (mPlayerData.creationStage >= ClassChosen)
         setGuiMode(GM_Birth);
     else
     {
-        creationStage = ClassChosen;
+        mPlayerData.creationStage = ClassChosen;
         setGuiMode(GM_Game);
     }
 }
@@ -702,13 +702,13 @@ void WindowManager::onCreateClassDialogDone(WindowBase* parWindow)
     }
 
     // Go to next dialog if class was previously chosen
-    if (creationStage == ReviewNext)
+    if (mPlayerData.creationStage == ReviewNext)
         setGuiMode(GM_Review);
-    else if (creationStage >= ClassChosen)
+    else if (mPlayerData.creationStage >= ClassChosen)
         setGuiMode(GM_Birth);
     else
     {
-        creationStage = ClassChosen;
+        mPlayerData.creationStage = ClassChosen;
         setGuiMode(GM_Game);
     }
 }
@@ -725,11 +725,11 @@ void WindowManager::onBirthSignDialogDone(WindowBase* parWindow)
     }
 
     // Go to next dialog if birth sign was previously chosen
-    if (creationStage >= BirthSignChosen)
+    if (mPlayerData.creationStage >= BirthSignChosen)
         setGuiMode(GM_Review);
     else
     {
-        creationStage = BirthSignChosen;
+        mPlayerData.creationStage = BirthSignChosen;
         setGuiMode(GM_Game);
     }
 }
@@ -745,7 +745,7 @@ void WindowManager::onReviewActivateDialog(int parDialog)
     WindowBase* reviewDialog = getWindow("reviewDialog");
     if (reviewDialog)
         removeWindow(reviewDialog);
-    creationStage = ReviewNext;
+    mPlayerData.creationStage = ReviewNext;
 
     switch(parDialog)
     {
