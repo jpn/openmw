@@ -15,6 +15,8 @@ using namespace Widgets;
 
 UString DialogeHistory::getColorAtPos(size_t _pos)
 {
+    UString colour;
+    /*
     UString colour = TextIterator::convertTagColour(mText->getTextColour());
     TextIterator iterator(mText->getCaption());
     while(iterator.moveNext())
@@ -26,11 +28,13 @@ UString DialogeHistory::getColorAtPos(size_t _pos)
         else if (pos == _pos)
             break;
     }
+    */
     return colour;
 }
 
 UString DialogeHistory::getColorTextAt(size_t _pos)
 {
+    /*
     bool breakOnNext = false;
     UString colour = TextIterator::convertTagColour(mText->getTextColour());
     UString colour2 = colour;
@@ -56,6 +60,7 @@ UString DialogeHistory::getColorTextAt(size_t _pos)
             breakOnNext = true;
         }
     }
+    */
     return "";
 }
 

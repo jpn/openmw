@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Resource" version="1.1">
+    <Resource type="ResourceImageSet" name="ArrowPointerImage">
+        <Group name="Pointer" texture="mwpointer.png" size="32 32">
+            <Index name="Pointer" rate="0.15">
+                <Frame point="0 0" count="30"/>
+            </Index>
+        </Group>
+    </Resource>
+    <Resource type="ResourceImageSet" name="SizeHorzPointerImage">
+        <Group name="Pointer" texture="mwpointer.png" size="32 32">
+            <Index name="Pointer" >
+                <Frame point="32 0"/>
+            </Index>
+        </Group>
+    </Resource>
+    <Resource type="ResourceImageSet" name="SizeVertPointerImage">
+        <Group name="Pointer" texture="mwpointer.png" size="32 32">
+            <Index name="Pointer" >
+                <Frame point="0 32"/>
+            </Index>
+        </Group>
+    </Resource>
+    <Resource type="ResourceImageSet" name="SizeLeftPointerImage">
+        <Group name="Pointer" texture="mwpointer.png" size="32 32">
+            <Index name="Pointer" >
+                <Frame point="32 32"/>
+            </Index>
+        </Group>
+    </Resource>
+    <Resource type="ResourceImageSet" name="SizeRightPointerImage">
+        <Group name="Pointer"  texture="mwpointer.png" size="32 32">
+            <Index name="Pointer" >
+                <Frame point="64 32"/>
+            </Index>
+        </Group>
+    </Resource>
+
+
+    <Resource type="ResourceImageSetPointer" name="arrow">
+        <Property key="Point" value="7 0"/>
+        <Property key="Size" value="32 32"/>
+        <Property key="Resource" value="ArrowPointerImage"/>
+    </Resource>
+    <Resource type="ResourceImageSetPointer" name="hresize">
+        <Property key="Point" value="16 14"/>
+        <Property key="Size" value="32 32"/>
+        <Property key="Resource" value="SizeHorzPointerImage"/>
+    </Resource>
+    <Resource type="ResourceImageSetPointer" name="vresize">
+        <Property key="Point" value="17 16"/>
+        <Property key="Size" value="32 32"/>
+        <Property key="Resource" value="SizeVertPointerImage"/>
+    </Resource>
+    <Resource type="ResourceImageSetPointer" name="dresize">
+        <Property key="Point" value="15 15"/>
+        <Property key="Size" value="32 32"/>
+        <Property key="Resource" value="SizeLeftPointerImage"/>
+    </Resource>
+    <Resource type="ResourceImageSetPointer" name="dresize2">
+        <Property key="Point" value="15 15"/>
+        <Property key="Size" value="32 32"/>
+        <Property key="Resource" value="SizeRightPointerImage"/>
+    </Resource>
+</MyGUI>

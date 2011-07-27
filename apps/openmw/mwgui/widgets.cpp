@@ -16,6 +16,29 @@ using namespace MWGui::Widgets;
  * Fixes the filename of a texture path to use the correct .dds extension.
  * This is needed on some ESM entries which point to a .tga file instead.
  */
+
+void setText(const MyGUI::WidgetPtr pt, const std::string& caption)
+{
+    MyGUI::TextBox *theTextBox = dynamic_cast<MyGUI::TextBox*>(pt);
+    if(theTextBox)
+    {
+        theTextBox->setCaption(caption);
+    }
+    else
+    {
+        MyGUI::Button *theButton = dynamic_cast<MyGUI::Button*>(pt);
+        if(theButton)
+        {
+            theButton->setCaption(caption);
+        }
+        else
+        {
+            std::cout << "OpenEngine setText: Unknown widget type..." << std::endl;
+        }
+    }
+}
+
+
 void MWGui::Widgets::fixTexturePath(std::string &path)
 {
     int offset = path.rfind(".");
@@ -62,24 +85,30 @@ void MWSkill::updateWidgets()
     {
         if (skillId == ESM::Skill::Length)
         {
-            skillNameWidget->setCaption("");
+            setText(skillNameWidget, "");
         }
         else
         {
             const std::string &name = manager->getGameSettingString(ESM::Skill::sSkillNameIds[skillId], "");
-            skillNameWidget->setCaption(name);
+            setText(skillNameWidget, name);
         }
     }
     if (skillValueWidget)
     {
         SkillValue::Type modified = value.getModified(), base = value.getBase();
-        skillValueWidget->setCaption(boost::lexical_cast<std::string>(modified));
+        setText(skillValueWidget, boost::lexical_cast<std::string>(modified));
         if (modified > base)
-            skillValueWidget->setState("increased");
+        {
+            skillValueWidget->_setWidgetState("increased");
+        }
         else if (modified < base)
-            skillValueWidget->setState("decreased");
+        {
+            skillValueWidget->_setWidgetState("decreased");
+        }
         else
-            skillValueWidget->setState("normal");
+        {
+            skillValueWidget->_setWidgetState("normal");
+        }
     }
 }
 
@@ -88,11 +117,10 @@ void MWSkill::onClicked(MyGUI::Widget* _sender)
     eventClicked(this);
 }
 
-void MWSkill::_initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name)
+void MWSkill::_initialise(WidgetStyle _style, const IntCoord& _coord, const std::string& _skinName, Widget* _parent, ICroppedRectangle* _croppedParent, const std::string& _name)
 {
-    Base::_initialise(_style, _coord, _align, _info, _parent, _croppedParent, _creator, _name);
-
-    initialiseWidgetSkin(_info);
+    Base::_initialise(_style, _coord, _skinName, _parent, _croppedParent, _name);
+    initialiseWidgetSkin(_skinName);
 }
 
 MWSkill::~MWSkill()
@@ -100,15 +128,17 @@ MWSkill::~MWSkill()
     shutdownWidgetSkin();
 }
 
-void MWSkill::baseChangeWidgetSkin(ResourceSkin* _info)
+void MWSkill::changeWidgetSkin(const std::string& _skinName)
 {
     shutdownWidgetSkin();
-    Base::baseChangeWidgetSkin(_info);
-    initialiseWidgetSkin(_info);
+    Base::changeWidgetSkin(_skinName);
+    initialiseWidgetSkin(_skinName);
 }
 
-void MWSkill::initialiseWidgetSkin(ResourceSkin* _info)
+void MWSkill::initialiseWidgetSkin(const std::string& _skinName)
 {
+    ResourceSkin* _info = SkinManager::getInstance().getByName(_skinName);
+    /*
     for (VectorWidgetPtr::iterator iter=mWidgetChildSkin.begin(); iter!=mWidgetChildSkin.end(); ++iter)
     {
         const std::string &name = *(*iter)->_getInternalData<std::string>();
@@ -137,6 +167,7 @@ void MWSkill::initialiseWidgetSkin(ResourceSkin* _info)
             button->eventMouseButtonClick = MyGUI::newDelegate(this, &MWSkill::onClicked);
         }
     }
+    */
 }
 
 void MWSkill::shutdownWidgetSkin()
@@ -176,7 +207,7 @@ void MWAttribute::updateWidgets()
     {
         if (id < 0 || id >= 8)
         {
-            attributeNameWidget->setCaption("");
+            setText(attributeNameWidget, "");
         }
         else
         {
@@ -191,27 +222,32 @@ void MWAttribute::updateWidgets()
                 "sAttributeLuck"
             };
             const std::string &name = manager->getGameSettingString(attributes[id], "");
-            attributeNameWidget->setCaption(name);
+            setText(attributeNameWidget, name);
         }
     }
     if (attributeValueWidget)
     {
         AttributeValue::Type modified = value.getModified(), base = value.getBase();
-        attributeValueWidget->setCaption(boost::lexical_cast<std::string>(modified));
+        setText(attributeValueWidget, boost::lexical_cast<std::string>(modified));
         if (modified > base)
-            attributeValueWidget->setState("increased");
+        {
+            attributeValueWidget->_setWidgetState("increased");
+        }
         else if (modified < base)
-            attributeValueWidget->setState("decreased");
+        {
+            attributeValueWidget->_setWidgetState("decreased");
+        }
         else
-            attributeValueWidget->setState("normal");
+        {
+            attributeValueWidget->_setWidgetState("normal");
+        }
     }
 }
 
-void MWAttribute::_initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name)
+void MWAttribute::_initialise(WidgetStyle _style, const IntCoord& _coord, const std::string& _skinName, Widget* _parent, ICroppedRectangle* _croppedParent, const std::string& _name)
 {
-    Base::_initialise(_style, _coord, _align, _info, _parent, _croppedParent, _creator, _name);
-
-    initialiseWidgetSkin(_info);
+    Base::_initialise(_style, _coord, _skinName, _parent, _croppedParent, _name);
+    initialiseWidgetSkin(_skinName);
 }
 
 MWAttribute::~MWAttribute()
@@ -219,15 +255,17 @@ MWAttribute::~MWAttribute()
     shutdownWidgetSkin();
 }
 
-void MWAttribute::baseChangeWidgetSkin(ResourceSkin* _info)
+void MWAttribute::changeWidgetSkin(const std::string& _skinName)
 {
     shutdownWidgetSkin();
-    Base::baseChangeWidgetSkin(_info);
-    initialiseWidgetSkin(_info);
+    Base::changeWidgetSkin(_skinName);
+    initialiseWidgetSkin(_skinName);
 }
 
-void MWAttribute::initialiseWidgetSkin(ResourceSkin* _info)
+void MWAttribute::initialiseWidgetSkin(const std::string& _skinName)
 {
+    ResourceSkin* _info = SkinManager::getInstance().getByName(_skinName);
+    /*
     for (VectorWidgetPtr::iterator iter=mWidgetChildSkin.begin(); iter!=mWidgetChildSkin.end(); ++iter)
     {
         const std::string &name = *(*iter)->_getInternalData<std::string>();
@@ -256,6 +294,7 @@ void MWAttribute::initialiseWidgetSkin(ResourceSkin* _info)
             button->eventMouseButtonClick = MyGUI::newDelegate(this, &MWAttribute::onClicked);
         }
     }
+    */
 }
 
 void MWAttribute::shutdownWidgetSkin()
@@ -301,17 +340,21 @@ void MWSpell::updateWidgets()
         const ESMS::ESMStore &store = mWindowManager->getStore();
         const ESM::Spell *spell = store.spells.search(id);
         if (spell)
-            spellNameWidget->setCaption(spell->name);
+        {
+            setText(spellNameWidget, spell->name);
+        }
         else
-            spellNameWidget->setCaption("");
+        {
+            setText(spellNameWidget, "");
+        }
     }
 }
 
-void MWSpell::_initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name)
+void MWSpell::_initialise(WidgetStyle _style, const IntCoord& _coord, const std::string& _skinName, Widget* _parent, ICroppedRectangle* _croppedParent, const std::string& _name)
 {
-    Base::_initialise(_style, _coord, _align, _info, _parent, _croppedParent, _creator, _name);
+    Base::_initialise(_style, _coord, _skinName, _parent, _croppedParent, _name);
 
-    initialiseWidgetSkin(_info);
+    initialiseWidgetSkin(_skinName);
 }
 
 MWSpell::~MWSpell()
@@ -319,15 +362,17 @@ MWSpell::~MWSpell()
     shutdownWidgetSkin();
 }
 
-void MWSpell::baseChangeWidgetSkin(ResourceSkin* _info)
+void MWSpell::changeWidgetSkin(const std::string& _skinName)
 {
     shutdownWidgetSkin();
-    Base::baseChangeWidgetSkin(_info);
-    initialiseWidgetSkin(_info);
+    Base::changeWidgetSkin(_skinName);
+    initialiseWidgetSkin(_skinName);
 }
 
-void MWSpell::initialiseWidgetSkin(ResourceSkin* _info)
+void MWSpell::initialiseWidgetSkin(const std::string& _skinName)
 {
+    ResourceSkin* _info = SkinManager::getInstance().getByName(_skinName);
+    /*
     for (VectorWidgetPtr::iterator iter=mWidgetChildSkin.begin(); iter!=mWidgetChildSkin.end(); ++iter)
     {
         const std::string &name = *(*iter)->_getInternalData<std::string>();
@@ -337,6 +382,7 @@ void MWSpell::initialiseWidgetSkin(ResourceSkin* _info)
             spellNameWidget = (*iter)->castType<StaticText>();
         }
     }
+    */
 }
 
 void MWSpell::shutdownWidgetSkin()
@@ -411,7 +457,9 @@ void MWSpellEffect::updateWidgets()
             textWidget->setCaption(spellLine);
         }
         else
+        {
             textWidget->setCaption("");
+        }
     }
     if (imageWidget)
     {
@@ -421,11 +469,11 @@ void MWSpellEffect::updateWidgets()
     }
 }
 
-void MWSpellEffect::_initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name)
+void MWSpellEffect::_initialise(WidgetStyle _style, const IntCoord& _coord, const std::string& _skinName, Widget* _parent, ICroppedRectangle* _croppedParent, const std::string& _name)
 {
-    Base::_initialise(_style, _coord, _align, _info, _parent, _croppedParent, _creator, _name);
+    Base::_initialise(_style, _coord, _skinName, _parent, _croppedParent, _name);
 
-    initialiseWidgetSkin(_info);
+    initialiseWidgetSkin(_skinName);
 }
 
 MWSpellEffect::~MWSpellEffect()
@@ -433,15 +481,17 @@ MWSpellEffect::~MWSpellEffect()
     shutdownWidgetSkin();
 }
 
-void MWSpellEffect::baseChangeWidgetSkin(ResourceSkin* _info)
+void MWSpellEffect::changeWidgetSkin(const std::string& _skinName)
 {
     shutdownWidgetSkin();
-    Base::baseChangeWidgetSkin(_info);
-    initialiseWidgetSkin(_info);
+    Base::changeWidgetSkin(_skinName);
+    initialiseWidgetSkin(_skinName);
 }
 
-void MWSpellEffect::initialiseWidgetSkin(ResourceSkin* _info)
+void MWSpellEffect::initialiseWidgetSkin(const std::string& _skinName)
 {
+    ResourceSkin* _info = SkinManager::getInstance().getByName(_skinName);
+    /*
     for (VectorWidgetPtr::iterator iter=mWidgetChildSkin.begin(); iter!=mWidgetChildSkin.end(); ++iter)
     {
         const std::string &name = *(*iter)->_getInternalData<std::string>();
@@ -456,6 +506,7 @@ void MWSpellEffect::initialiseWidgetSkin(ResourceSkin* _info)
             imageWidget = (*iter)->castType<StaticImage>();
         }
     }
+    */
 }
 
 void MWSpellEffect::shutdownWidgetSkin()
@@ -503,11 +554,11 @@ void MWDynamicStat::setTitle(const std::string text)
         textWidget->setCaption(text);
 }
 
-void MWDynamicStat::_initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name)
+void MWDynamicStat::_initialise(WidgetStyle _style, const IntCoord& _coord, const std::string& _skinName, Widget* _parent, ICroppedRectangle* _croppedParent, const std::string& _name)
 {
-    Base::_initialise(_style, _coord, _align, _info, _parent, _croppedParent, _creator, _name);
+    Base::_initialise(_style, _coord, _skinName, _parent, _croppedParent, _name);
 
-    initialiseWidgetSkin(_info);
+    initialiseWidgetSkin(_skinName);
 }
 
 MWDynamicStat::~MWDynamicStat()
@@ -515,15 +566,17 @@ MWDynamicStat::~MWDynamicStat()
     shutdownWidgetSkin();
 }
 
-void MWDynamicStat::baseChangeWidgetSkin(ResourceSkin* _info)
+void MWDynamicStat::changeWidgetSkin(const std::string& _skinName)
 {
     shutdownWidgetSkin();
-    Base::baseChangeWidgetSkin(_info);
-    initialiseWidgetSkin(_info);
+    Base::changeWidgetSkin(_skinName);
+    initialiseWidgetSkin(_skinName);
 }
 
-void MWDynamicStat::initialiseWidgetSkin(ResourceSkin* _info)
+void MWDynamicStat::initialiseWidgetSkin(const std::string& _skinName)
 {
+    ResourceSkin* _info = SkinManager::getInstance().getByName(_skinName);
+    /*
     for (VectorWidgetPtr::iterator iter=mWidgetChildSkin.begin(); iter!=mWidgetChildSkin.end(); ++iter)
     {
         const std::string &name = *(*iter)->_getInternalData<std::string>();
@@ -543,6 +596,7 @@ void MWDynamicStat::initialiseWidgetSkin(ResourceSkin* _info)
             barTextWidget = (*iter)->castType<StaticText>();
         }
     }
+    */
 }
 
 void MWDynamicStat::shutdownWidgetSkin()

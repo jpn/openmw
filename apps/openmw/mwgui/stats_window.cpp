@@ -95,7 +95,7 @@ void StatsWindow::setBar(const std::string& name, const std::string& tname, int 
 
 void StatsWindow::setPlayerName(const std::string& playerName)
 {
-    mMainWidget->setCaption(playerName);
+    static_cast<MyGUI::WindowPtr>(mMainWidget)->setCaption(playerName);
 }
 
 void StatsWindow::setStyledText(MyGUI::StaticTextPtr widget, ColorStyle style, const std::string &value)
@@ -262,7 +262,7 @@ void StatsWindow::addItem(const std::string text, MyGUI::IntCoord &coord1, MyGUI
     MyGUI::StaticTextPtr skillNameWidget;
 
     skillNameWidget = skillClientWidget->createWidget<MyGUI::StaticText>("SandText", coord1 + MyGUI::IntSize(coord2.width, 0), MyGUI::Align::Default);
-    skillNameWidget->setCaption(text);
+    //skillNameWidget->setCaption(text);
 
     skillWidgets.push_back(skillNameWidget);
 

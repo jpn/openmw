@@ -328,8 +328,8 @@ include_directories("."
     ${OIS_INCLUDE_DIR} ${Boost_INCLUDE_DIR}
     ${PLATFORM_INCLUDE_DIR}
     ${CMAKE_HOME_DIRECTORY}/extern/caelum/include
-    ${CMAKE_HOME_DIRECTORY}/extern/mygui_3.0.1/MyGUIEngine/include
-    ${CMAKE_HOME_DIRECTORY}/extern/mygui_3.0.1/OgrePlatform/include
+    ${CMAKE_HOME_DIRECTORY}/extern/mygui_3.2/MyGUIEngine/include
+    ${CMAKE_HOME_DIRECTORY}/extern/mygui_3.2/OgrePlatform/include
     ${OPENAL_INCLUDE_DIR}
     ${UUID_INCLUDE_DIR}
     ${LIBDIR}
@@ -338,7 +338,7 @@ include_directories("."
 link_directories(${Boost_LIBRARY_DIRS} ${OGRE_LIB_DIR})
 
 add_subdirectory( extern/caelum )
-add_subdirectory( extern/mygui_3.0.1 )
+add_subdirectory( extern/mygui_3.2)
 
 # Make sure that certain libraries are used as static libraries
 # This is in effect turns off __declspec (dllexport) for windows

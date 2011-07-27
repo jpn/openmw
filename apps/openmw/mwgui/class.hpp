@@ -117,7 +117,7 @@ namespace MWGui
 
         MyGUI::StaticImagePtr classImage;
         MyGUI::ListPtr        classList;
-        MyGUI::StaticTextPtr  specializationName;
+        MyGUI::TextBox*     specializationName;
         Widgets::MWAttributePtr favoriteAttribute[2];
         Widgets::MWSkillPtr   majorSkill[5];
         Widgets::MWSkillPtr   minorSkill[5];
@@ -150,7 +150,9 @@ namespace MWGui
         void onCancelClicked(MyGUI::Widget* _sender);
 
     private:
-        MyGUI::WidgetPtr      specialization0, specialization1, specialization2;
+        MyGUI::TextBox* specialization0;
+        MyGUI::TextBox* specialization1;
+        MyGUI::TextBox* specialization2;
 
         ESM::Class::Specialization specializationId;
     };
@@ -273,7 +275,7 @@ namespace MWGui
 
     private:
         MyGUI::EditPtr          editName;
-        MyGUI::WidgetPtr        specializationName;
+        MyGUI::TextBox*         specializationName;
         Widgets::MWAttributePtr favoriteAttribute0, favoriteAttribute1;
         Widgets::MWSkillPtr     majorSkill[5];
         Widgets::MWSkillPtr     minorSkill[5];

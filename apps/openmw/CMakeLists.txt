@@ -262,7 +262,7 @@ target_link_libraries(openmw
   ${BULLET_LIBRARIES}
   caelum
   MyGUIEngine
-  MyGUIOgrePlatform
+  MyGUI.OgrePlatform
 )
 
 if (APPLE)

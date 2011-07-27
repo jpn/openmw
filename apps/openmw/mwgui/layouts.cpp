@@ -45,6 +45,14 @@ HUD::HUD(int width, int height, bool fpsSwitch)
     compass->setImageTexture("textures\\compass.dds");
     crosshair->setImageTexture("textures\\target.dds");
 
+    //MyGUI::ISubWidget* main = compass->getSubWidgetMain();
+    //MyGUI::RotatingSkin* rotatingSubskin = main->castType<MyGUI::RotatingSkin>();
+    //MyGUI::ImageBox* image = compass->getParent()->createWidget<MyGUI::ImageBox>("RotatingSkin", MyGUI::IntCoord(150, 150, 100, 150), MyGUI::Align::Default);
+    //image->setImageTexture("textures\\compass.dds");
+    //MyGUI::ISubWidget* main = image->getSubWidgetMain();
+    //MyGUI::RotatingSkin* rotatingSubskin = main->castType<MyGUI::RotatingSkin>();
+    //rotatingSubskin->setAngle(3.14);
+
     // These are just demo values, you should replace these with
     // real calls from outside the class later.
     setWeapIcon("icons\\w\\tx_knife_iron.dds");
